@@ -7,8 +7,6 @@
     <version>0.0.5</version>
     <name>my-app</name>
 
-    <!-- Demo on Github Webhooks-->
-
     <url>http://maven.apache.org</url>
 
     <dependencies>
@@ -22,7 +20,6 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
-            <!-- <scope>provided</scope> -->
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -51,8 +48,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -61,15 +58,20 @@
                 <version>2.19</version>
             </plugin>
 
-            <!-- Add the maven-war-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version> <!-- You can adjust this version as needed -->
+                <version>3.3.1</version>
                 <configuration>
-                    <!-- Optional: You can configure your war plugin here -->
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
+            </plugin>
+
+            <!-- Add SonarQube Maven Plugin (use a version compatible with Java 8) -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version> <!-- Compatible with Java 8 -->
             </plugin>
         </plugins>
     </build>
