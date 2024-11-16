@@ -1,42 +1,54 @@
-node{
-   stage('SCM-Checkout'){
-     git 'https://github.com/damodaranj/my-app.git'
-   }
-   stage('maven buildstage'){
+node {
+    stage('SCM Checkout') {
+        git 'https://github.com/bezardo/CICD-Project.git'
+    }
+    
+    stage('Maven Build') {
+        def mvnHome = tool name: 'maven3', type: 'maven'
+        sh "${mvnHome}/bin/mvn clean package"
+        sh 'mv target/myweb*.war target/newapp.war'
+    }
+    
+    stage('SonarQube Analysis') {
+        def mvnHome = tool name: 'maven3', type: 'maven'
+        withSonarQubeEnv('sonar') {
+            sh "${mvnHome}/bin/mvn sonar:sonar"
+        }
+    }
+    
+    stage('Build Docker Image') {
+        sh 'docker build -t bezardo/myweb:0.0.2 .'
+    }
+    
+stage('Remove Previous Container') {
+    try {
+        sh 'docker rm -f tomcattest'
+    } catch (Exception e) {
+        echo "Previous container not found, skipping removal."
+    }
+    sleep 15
+    try {
+        sh 'docker rm -f tomcattest'
+    } catch (Exception e) {
+        echo "Previous container not found, skipping removal."
+    }
+} 
 
-      def mvnHome =  tool name: 'maven3', type: 'maven'   
-      sh "${mvnHome}/bin/mvn clean package"
-	  sh 'mv target/myweb*.war target/newapp.war'
-   }
-    stage('SonarQube Analysis') {
-	        def mvnHome =  tool name: 'maven3', type: 'maven'
-	        withSonarQubeEnv('sonar') { 
-	          sh "${mvnHome}/bin/mvn sonar:sonar"
-	        }
-	    }
-   stage('Build Docker Image'){
-   sh 'docker build -t saidamo/myweb:0.0.2 .'
-   }
-   stage('Docker Image Push'){
-   withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
-   sh "docker login -u saidamo -p ${dockerPassword}"
-    }
-   sh 'docker push saidamo/myweb:0.0.2'
-   }
-  stage('Nexus Image Push'){
-   sh "docker login -u admin -p admin123 13.233.160.223:8083"
-   sh "docker tag saidamo/myweb:0.0.2 13.233.160.223:8083/damo:1.0.0"
-   sh 'docker push 13.233.160.223:8083/damo:1.0.0'
-   }
+stage('Cooldown Period') {
+    echo "Waiting for 60 seconds to ensure container removal is complete..."
+    sleep 50
+}
 
+stage('Docker Deployment') {
+    sh 'docker run -d -p 8090:8080 --name tomcattest bezardo/myweb:0.0.2'
+} 
 
-   stage('Remove Previous Container'){
-	try{
-		sh 'docker rm -f tomcattest'
-	}catch(error){
-		//  do nothing if there is an exception
-	}
-   stage('Docker deployment'){
-   sh 'docker run -d -p 8090:8080 --name tomcattest saidamo/myweb:0.0.2' 
-   }
+stage('img push to artifactory') {
+        withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+        sh "echo ${NEXUS_PASS} | docker login -u ${NEXUS_USER} --password-stdin <IP>:8082"
+        }
+        sh 'docker tag bezardo/myweb:0.0.2 <IP>:8082/newapp:latest'
+        sh 'docker push <IP>:8082/newapp:latest'
+    }
+    
 }
