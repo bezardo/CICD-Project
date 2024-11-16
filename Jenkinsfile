@@ -45,9 +45,9 @@ node {
 
     stage('img push to artifactory') {
         withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-            sh "echo ${NEXUS_PASS} | docker login -u ${NEXUS_USER} --password-stdin 192.168.71.128:8082"
+            sh "echo ${NEXUS_PASS} | docker login -u ${NEXUS_USER} --password-stdin <IP>:8082"
         }
-        sh 'docker tag bezardo/myweb:0.0.2 192.168.71.128:8082/newapp:latest'
-        sh 'docker push 192.168.71.128:8082/newapp:latest'
+        sh 'docker tag bezardo/myweb:0.0.2 <IP>:8082/newapp:latest'
+        sh 'docker push <IP>:8082/newapp:latest'
     }
 }
