@@ -1,5 +1,5 @@
 node {
-    stage('SCM Checkout') {
+    stage('SCM checkout') {
         git 'https://github.com/bezardo/CICD-Project.git'
     }
 
