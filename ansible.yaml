@@ -20,4 +20,4 @@
       shell: chmod +x changeTag.sh && ./changeTag.sh {{DOCKER_TAG}}
 
     - name: apply manifests
-      shell: kubectl apply -f /var/lib/jenkins/workspace/FinolaFIne Automata/
+      shell: kubectl apply -f /var/lib/jenkins/workspace/FinolaFIne Automata/manifests
