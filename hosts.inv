@@ -1,0 +1,2 @@
+[k8s_talos]
+talos ansible_host=0.tcp.in.ngrok.io ansible_port=12183 ansible_user=bezardo ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_rsa
