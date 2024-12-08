@@ -8,7 +8,7 @@
         chdir: /var/lib/jenkins/workspace/FinolaFIne Automata
 
     - name: Login to Nexus artifactory
-      shell: echo ${NEXUS_PASS} | docker login -u ${NEXUS_USER} --password-stdin {{HOST_IP}}:8082
+      shell: echo ${NEXUS_PASS} | docker login -u {{NEXUS_USER}} --password-stdin {{HOST_IP}}:8082
 
     - name: Tag the image
       shell: docker tag bezardo/myweb:{{DOCKER_TAG}} {{HOST_IP}}:8082/newapp:{{DOCKER_TAG}} 
