@@ -6,4 +6,4 @@
   tasks:
     - name: connection success
       debug:
-        msg: "user={{NEXUS_USER}} , pass={{NEXUS_PASS}} , HOST_IP={{192.168.44.129}}
+        msg: "user={{NEXUS_USER}} , pass={{NEXUS_PASS}} , HOST_IP={{192.168.44.129}} , commit-ID={{DOCKER_TAG}}
